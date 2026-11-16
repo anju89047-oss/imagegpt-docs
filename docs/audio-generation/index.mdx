@@ -1,0 +1,90 @@
+---
+id: index
+title: Audio (Text to Speech) API
+sidebar_label: Overview
+slug: /audio-generation
+---
+# Audio (Text to Speech) API
+
+Convert text to natural-sounding audio using models from Qwen3, ElevenLabs, and OpenAI — all through a single endpoint with a credit-based pricing system.
+
+## Endpoints
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `POST` | `/generate/text-speech` | Convert text to speech audio. |
+
+## Parameters
+
+Request body fields for `/generate/text-speech`:
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `prompt` | `string` | Yes | — | The text you want to convert to speech. |
+| `model` | `string` | Yes | — | Model ID to use. E.g. QWEN3/TTS-FLASH, ELEVENLABS/TTS, OPENAI/GPT-AUDIO-MINI. |
+| `outputType` | `string` | No | `"binary"` | Use "binary" to receive raw audio bytes, or "url" to get a hosted audio URL in JSON. |
+| `voice` | `string` | No | `"alloy"` | Voice name (applies to OpenAI and ElevenLabs models only). E.g. alloy, nova, rachel, josh. |
+| `outputFormat` | `string` | No | `"mp3"` | Audio format for the output (applies to OpenAI and ElevenLabs models only). Currently mp3. |
+
+## Response example
+
+**binary**
+
+```text
+Raw audio bytes (mp3 stream). Save directly to a file or create a Blob URL.
+```
+
+**url**
+
+```json
+{
+  "success": true,
+  "url": "https://ai.imagegpt.online/imagegpt-pro-audio/1780682139387-amsq4xznzvi.wav",
+  "taskId": "imagegpt_qwen3/tts-flash-cu0zjaz1xlc1780682133698",
+  "duration": 1,
+  "creditsDeducted": 10
+}
+```
+
+## Examples
+
+```js title="Text-to-speech (fetch)"
+fetch('https://api.imagegpt.online/generate/text-speech', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    prompt: 'Hello, welcome to ImageGPT!',
+    model: 'QWEN3/TTS-FLASH',
+    outputType: 'binary'
+  })
+})
+  .then(res => res.blob())
+  .then(blob => {
+    const audio = new Audio(URL.createObjectURL(blob));
+    audio.play();
+  });
+```
+
+## Pricing
+
+Charged in **credits per request**.
+
+| Tier | Range | Description | Examples |
+| --- | --- | --- | --- |
+| Economy | 3–10 credits | Fast, lightweight TTS models. | Qwen3 TTS Flash |
+| Standard | 25–50 credits | High-quality voices for production. | ElevenLabs TTS, GPT Audio Mini |
+| Premium | 50–150 credits | Ultra-realistic studio-quality audio. | ElevenLabs V3, GPT Audio 1.5 |
+
+## Models
+
+Each model has its own page with parameters, examples, and a live playground.
+
+| Model | Model ID | Credits / request |
+| --- | --- | --- |
+| [Qwen3 TTS Flash](./qwen3-tts-flash.mdx) | `QWEN3/TTS-FLASH` | 10 |
+| [ElevenLabs TTS](./elevenlabs-tts.mdx) | `ELEVENLABS/TTS` | 50 |
+| [GPT Audio Mini](./openai-gpt-audio-mini.mdx) | `OPENAI/GPT-AUDIO-MINI` | 25 |
+| [GPT Audio 1.5](./openai-gpt-audio-1-5.mdx) | `OPENAI/GPT-AUDIO-1.5` | 50 |

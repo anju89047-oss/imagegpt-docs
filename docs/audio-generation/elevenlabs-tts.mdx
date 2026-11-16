@@ -1,0 +1,150 @@
+---
+id: elevenlabs-tts
+title: ElevenLabs TTS
+sidebar_label: ElevenLabs TTS
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ApiPlayground from '@site/src/components/ApiPlayground';
+
+# ElevenLabs TTS
+
+A text-to-speech model (`ELEVENLABS/TTS`) available through the ImageGPT [Audio (Text to Speech) API](./index.mdx).
+
+| Property | Value |
+| --- | --- |
+| Model ID | `ELEVENLABS/TTS` |
+| Playground | [Audio](./index.mdx) |
+| Pricing | 50 credits per request |
+
+## Headers
+
+Send your API key in the `x-api-key` header on every request. See
+[Authentication](../authentication.mdx) for details.
+
+| Header | Required | Value |
+| --- | --- | --- |
+| `x-api-key` | Yes | `YOUR_API_KEY` |
+| `Content-Type` | Yes | `application/json` |
+
+A missing or invalid key returns **401 Unauthorized**.
+
+## Parameters
+
+Request body fields for `/generate/text-speech`:
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `prompt` | `string` | Yes | — | The text you want to convert to speech. |
+| `model` | `string` | Yes | — | Model ID to use. E.g. QWEN3/TTS-FLASH, ELEVENLABS/TTS, OPENAI/GPT-AUDIO-MINI. |
+| `outputType` | `string` | No | `"binary"` | Use "binary" to receive raw audio bytes, or "url" to get a hosted audio URL in JSON. |
+| `voice` | `string` | No | `"alloy"` | Voice name (applies to OpenAI and ElevenLabs models only). E.g. alloy, nova, rachel, josh. |
+| `outputFormat` | `string` | No | `"mp3"` | Audio format for the output (applies to OpenAI and ElevenLabs models only). Currently mp3. |
+
+## Request examples
+
+<Tabs groupId="lang">
+<TabItem value="curl" label="cURL">
+
+```bash
+curl -X POST https://api.imagegpt.online/generate/text-speech \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{"prompt":"ImageGPT is an AI platform to generate images, videos, audio, code, and chat responses using multiple advanced models in one place.","model":"ELEVENLABS/TTS","outputType":"binary","voice":"alloy","outputFormat":"mp3"}'
+```
+
+</TabItem>
+<TabItem value="js" label="JavaScript">
+
+```js
+fetch('https://api.imagegpt.online/generate/text-speech', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+  "prompt": "ImageGPT is an AI platform to generate images, videos, audio, code, and chat responses using multiple advanced models in one place.",
+  "model": "ELEVENLABS/TTS",
+  "outputType": "binary",
+  "voice": "alloy",
+  "outputFormat": "mp3"
+})
+})
+  .then(res => res.blob())
+  .then(blob => {
+    const audio = new Audio(URL.createObjectURL(blob));
+    audio.play();
+  });
+```
+
+</TabItem>
+<TabItem value="python" label="Python">
+
+```python
+import requests
+
+resp = requests.post(
+    "https://api.imagegpt.online/generate/text-speech",
+    headers={"x-api-key": "YOUR_API_KEY"},
+    json={
+        "prompt": "ImageGPT is an AI platform to generate images, videos, audio, code, and chat responses using multiple advanced models in one place.",
+        "model": "ELEVENLABS/TTS",
+        "outputType": "binary",
+        "voice": "alloy",
+        "outputFormat": "mp3"
+    },
+)
+with open("speech.mp3", "wb") as f:
+    f.write(resp.content)
+```
+
+</TabItem>
+</Tabs>
+
+## Response example
+
+**binary**
+
+```text
+Raw audio bytes (mp3 stream). Save directly to a file or create a Blob URL.
+```
+
+**url**
+
+```json
+{
+  "success": true,
+  "url": "https://ai.imagegpt.online/imagegpt-pro-audio/1780682139387-amsq4xznzvi.wav",
+  "taskId": "imagegpt_qwen3/tts-flash-cu0zjaz1xlc1780682133698",
+  "duration": 1,
+  "creditsDeducted": 10
+}
+```
+
+## Pricing
+
+**50** credits per request.
+
+## Playground
+
+Try this model live. Your key is used only in your browser to call the API
+directly and is never stored.
+
+<ApiPlayground
+  endpoint="/generate/text-speech"
+  media="audio"
+  defaultBody={`{
+  "prompt": "ImageGPT is an AI platform to generate images, videos, audio, code, and chat responses using multiple advanced models in one place.",
+  "model": "ELEVENLABS/TTS",
+  "outputType": "binary",
+  "voice": "alloy",
+  "outputFormat": "mp3"
+}`}
+/>
+
+:::note
+The browser playground calls `https://api.imagegpt.online` directly, so it only works if the API
+allows cross-origin requests from this site. If it is blocked, use the cURL,
+JavaScript, or Python samples above from your own server.
+:::

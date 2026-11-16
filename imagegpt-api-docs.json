@@ -1,0 +1,267 @@
+{
+  "meta": {
+    "title": "ImageGPT API",
+    "description": "Unified REST API for generating text, images, video, and audio from 40+ AI models through a single endpoint with credit-based pricing.",
+    "baseUrl": "https://api.imagegpt.online",
+    "authentication": {
+      "type": "apiKey",
+      "in": "header",
+      "headerName": "x-api-key",
+      "example": "x-api-key: YOUR_API_KEY",
+      "errorOnMissing": "401 Unauthorized",
+      "notes": "Every request must include your API key in the x-api-key header. A missing or invalid key returns 401 Unauthorized."
+    },
+    "codeLanguages": ["javascript", "nodejs", "python", "curl", "php"]
+  },
+
+  "sidebar": {
+    "docsSidebar": [
+      "intro",
+      "authentication",
+      {
+        "type": "category",
+        "label": "Playgrounds",
+        "collapsed": false,
+        "items": [
+          "text-generation",
+          "image-generation",
+          "video-generation",
+          "audio-generation"
+        ]
+      }
+    ]
+  },
+
+  "pages": {
+    "text-generation": {
+      "id": "text-generation",
+      "sidebar_label": "Text",
+      "title": "Text Generation API",
+      "overview": "A unified REST API to generate text using 20+ AI models from OpenAI, Google, Anthropic, DeepSeek, Perplexity, and more — all through a single endpoint with a credit-based pricing system.",
+      "endpoints": [
+        { "method": "POST", "path": "/generate/text", "description": "Generate text / chat completions from a prompt." }
+      ],
+      "requestBody": [
+        { "name": "model", "type": "string", "required": true, "default": null, "description": "Model ID to use for generation. See the model list below for all available IDs." },
+        { "name": "prompt", "type": "string", "required": true, "default": null, "description": "The user prompt / instruction to send to the model." },
+        { "name": "system", "type": "string", "required": false, "default": "\"\"", "description": "Optional system message to set the model's behavior or persona." },
+        { "name": "outputType", "type": "string", "required": false, "default": "\"text\"", "description": "Output format. Use \"text\" for plain text or \"json\" to receive a structured JSON response." },
+        { "name": "maxTokens", "type": "number", "required": false, "default": "model max", "description": "Maximum number of output tokens to generate. Minimum value is 100." }
+      ],
+      "responses": [
+        { "outputType": "text", "format": "text", "example": "A plain text string from the model." },
+        { "outputType": "json", "format": "json", "example": "{\n  \"success\": true,\n  \"output\": \"...\",\n  \"usage\": {\n    \"inputTokens\": 0,\n    \"outputTokens\": 0,\n    \"creditsDeducted\": 0\n  }\n}" }
+      ],
+      "notes": [
+        "When using outputType: \"json\", instruct the model in your prompt to respond in valid JSON format for best results."
+      ],
+      "examples": [
+        {
+          "label": "Text completion (fetch)",
+          "lang": "javascript",
+          "code": "fetch('https://api.imagegpt.online/generate/text', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n    'x-api-key': 'YOUR_API_KEY'\n  },\n  body: JSON.stringify({\n    model: 'GEMINI-2.5-FLASH-LITE',\n    system: 'You are a helpful assistant.',\n    prompt: 'Explain quantum computing in one paragraph.',\n    outputType: 'text',\n    maxTokens: 300\n  })\n})\n  .then(res => res.text())\n  .then(console.log);"
+        }
+      ],
+      "pricing": {
+        "unit": "credits per 1,000 output tokens",
+        "notes": "Input tokens are always free. The credit value shown per model is charged per 1,000 output tokens."
+      },
+      "models": [
+        { "id": "OPENAI-GPT-NANO-5.4", "name": "OPENAI GPT NANO 5.0", "credits": 4 },
+        { "id": "OPENAI-GPT-NANO-5.0", "name": "OPENAI GPT NANO 5.4", "credits": 3 },
+        { "id": "OPENAI-GPT-5.4", "name": "OPENAI GPT 5.4", "credits": 30 },
+        { "id": "OPENAI-GPT-5.5", "name": "OPENAI GPT 5.5", "credits": 50 },
+        { "id": "OPENAI-GPT-6-ASTRA", "name": "OPENAI GPT 6 Astra", "credits": 50 },
+        { "id": "GEMINI-2.5-FLASH-LITE", "name": "GEMINI 2.5 FLASH LITE", "credits": 3 },
+        { "id": "GEMINI-2.5-FLASH-LITE-SEARCH", "name": "GEMINI 2.5 FLASH LITE SEARCH", "credits": 3 },
+        { "id": "GEMINI-3-FLASH", "name": "GEMINI 3 FLASH", "credits": 10 },
+        { "id": "GEMINI-3.1-PRO", "name": "GEMINI 3.1 PRO", "credits": 25 },
+        { "id": "GEMINI-3.1-FLASH-LITE", "name": "GEMINI 3.1 FLASH LITE", "credits": 15 },
+        { "id": "GEMINI-3.8-FLASH", "name": "GEMINI 3.8 FLASH", "credits": 20 },
+        { "id": "CLAUDE-HAIKU-4.5", "name": "CLAUDE HAIKU 4.5", "credits": 10 },
+        { "id": "CLAUDE-SONNET-4.6", "name": "CLAUDE SONNET 4.6", "credits": 30 },
+        { "id": "CLAUDE-OPUS-4.6", "name": "CLAUDE OPUS 4.6", "credits": 40 },
+        { "id": "CLAUDE-OPUS-4.7", "name": "CLAUDE OPUS 4.7", "credits": 40 },
+        { "id": "CLAUDE-OPUS-4.8", "name": "CLAUDE OPUS 4.8", "credits": 50 },
+        { "id": "CLAUDE-FABLE-5.1", "name": "CLAUDE FABLE 5.1", "credits": 50 },
+        { "id": "DEEPSEEK-V4-FLASH", "name": "DEEPSEEK V4 FLASH", "credits": 3 },
+        { "id": "DEEPSEEK-V4-PRO", "name": "DEEPSEEK V4 PRO", "credits": 7 },
+        { "id": "PERPLEXITY-SONAR", "name": "PERPLEXITY SONAR", "credits": 3 },
+        { "id": "PERPLEXITY-REASONING", "name": "PERPLEXITY REASONING", "credits": 10 },
+        { "id": "AWS-NOVA", "name": "AWS NOVA MICRO", "credits": 3 },
+        { "id": "QWEN3-CODER", "name": "ALIBABA QWEN3 CODER", "credits": 3 },
+        { "id": "MISTRAL-SMALL", "name": "MISTRAL SMALL", "credits": 3 },
+        { "id": "MOONSHOT-KIMI", "name": "MOONSHOT KIMI K2.5", "credits": 6 },
+        { "id": "MINIMAX M2.7", "name": "MINIMAX M2.7", "credits": 3 },
+        { "id": "MIDI-JOURNEY", "name": "MIDI JOURNEY", "credits": 5 },
+        { "id": "OPENAI/GPT-OSS", "name": "OPENAI GPT-OSS", "credits": 1 },
+        { "id": "GOOGLE/GEMMA", "name": "GOOGLE GEMMA", "credits": 1 },
+        { "id": "META/LLAMA", "name": "META LLAMA", "credits": 1 }
+      ]
+    },
+
+    "image-generation": {
+      "id": "image-generation",
+      "sidebar_label": "Image",
+      "title": "Image Generation API",
+      "overview": "A unified REST API to generate images using 15+ AI models — supporting text-to-image and image-to-image generation with multiple output formats, all through a single endpoint with a credit-based pricing system.",
+      "endpoints": [
+        { "method": "POST", "path": "/generate/text-image", "description": "Generate an image from a text prompt." },
+        { "method": "POST", "path": "/generate/image-image", "description": "Generate an image from one or more input images (image-to-image)." }
+      ],
+      "requestBody": [
+        { "name": "model", "type": "string", "required": true, "default": null, "description": "Model ID to use for generation. See the model list below for all available IDs." },
+        { "name": "prompt", "type": "string", "required": true, "default": null, "description": "Text description of the image you want to generate." },
+        { "name": "width", "type": "number", "required": false, "default": "512", "description": "Output image width in pixels." },
+        { "name": "height", "type": "number", "required": false, "default": "512", "description": "Output image height in pixels." },
+        { "name": "outputType", "type": "string", "required": false, "default": "\"binary\"", "description": "Output delivery format. One of \"binary\" (image blob), \"url\" (hosted link), or \"base64\" (encoded string)." },
+        { "name": "outputFormat", "type": "string", "required": false, "default": "\"png\"", "description": "Image file format. Either \"png\" or \"jpg\"." },
+        { "name": "image", "type": "string[]", "required": false, "default": null, "description": "Array of input image URLs (max 3). Required only for image-to-image generation." }
+      ],
+      "responses": [
+        { "outputType": "binary", "format": "javascript", "example": "const blob = await response.blob();\nconst url = URL.createObjectURL(blob);" },
+        { "outputType": "url", "format": "json", "example": "{\n  \"success\": true,\n  \"taskId\": \"imagegpt_img-...\",\n  \"url\": \"https://...\",\n  \"creditsDeducted\": 3\n}" },
+        { "outputType": "base64", "format": "json", "example": "{\n  \"success\": true,\n  \"taskId\": \"imagegpt_img-...\",\n  \"base64\": \"/9j/4QWm...\",\n  \"creditsDeducted\": 3\n}" }
+      ],
+      "examples": [
+        {
+          "label": "Text-to-image (fetch)",
+          "lang": "javascript",
+          "code": "fetch('https://api.imagegpt.online/generate/text-image', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n    'x-api-key': 'YOUR_API_KEY'\n  },\n  body: JSON.stringify({\n    model: 'FLUX-SCHNELL',\n    prompt: 'A futuristic city at sunset, photorealistic',\n    width: 512,\n    height: 512,\n    outputType: 'url',\n    outputFormat: 'png'\n  })\n})\n  .then(res => res.json())\n  .then(data => console.log('Image URL:', data.url));"
+        },
+        {
+          "label": "Image-to-image (body)",
+          "lang": "javascript",
+          "code": "body: JSON.stringify({\n  model: 'FLUX-KONTEXT',\n  prompt: 'Turn this photo into an oil painting',\n  image: ['https://example.com/input.jpg'],\n  outputType: 'url'\n})"
+        }
+      ],
+      "pricing": {
+        "unit": "credits per image",
+        "notes": "Each image deducts the credit value shown for the selected model."
+      },
+      "models": [
+        { "id": "FLUX-SCHNELL", "name": "Flux Schnell", "credits": 3 },
+        { "id": "ZIMAGE-TURBO", "name": "Z Image Turbo", "credits": 5 },
+        { "id": "GPT-IMAGE-1", "name": "GPT Image 1.0", "credits": 10 },
+        { "id": "GPT-IMAGE-1.5", "name": "GPT Image 1.5", "credits": 25, "imageToImage": true },
+        { "id": "GPT-IMAGE-2", "name": "GPT Image 2.0", "credits": 35, "imageToImage": true },
+        { "id": "GPT-IMAGE-2.5-FLARE", "name": "GPT Image 2.5 Flare", "credits": 35, "imageToImage": true },
+        { "id": "NANOBANANA", "name": "Nano Banana", "credits": 10, "imageToImage": true },
+        { "id": "NANOBANANA-2-LITE", "name": "Nano Banana 2 Lite", "credits": 10, "imageToImage": true },
+        { "id": "NANOBANANA-2", "name": "Nano Banana 2", "credits": 40, "imageToImage": true },
+        { "id": "NANOBANANA-2.1", "name": "Nano Banana 2.1", "credits": 20, "imageToImage": true },
+        { "id": "NANOBANANA-PRO", "name": "Nano Banana Pro", "credits": 100, "imageToImage": true },
+        { "id": "SEEDREAM", "name": "Seedream", "credits": 25, "imageToImage": true },
+        { "id": "SEEDREAM 4.0", "name": "Seedream 4.0", "credits": 35, "imageToImage": true },
+        { "id": "SEEDREAM LITE 5.0", "name": "Seedream Lite 5.0", "credits": 35, "imageToImage": true },
+        { "id": "IDEOGRAM", "name": "Ideogram", "credits": 35 },
+        { "id": "QWEN-IMAGE", "name": "Qwen Image", "credits": 30 },
+        { "id": "FLUX-KONTEXT", "name": "Flux Kontext", "credits": 25, "imageToImage": true },
+        { "id": "WAN-IMAGE-2.7", "name": "Wan Image 2.7", "credits": 40, "imageToImage": true },
+        { "id": "GROK-IMAGE", "name": "Grok Imagine", "credits": 20, "imageToImage": true }
+      ]
+    },
+
+    "video-generation": {
+      "id": "video-generation",
+      "sidebar_label": "Video",
+      "title": "Video Generation API",
+      "overview": "A unified REST API to generate videos from text prompts or images using 7+ AI models. Video generation is asynchronous — submitting a request returns a task ID, and you poll a separate status endpoint until the video is ready.",
+      "async": true,
+      "endpoints": [
+        { "method": "POST", "path": "/generate/text-video", "description": "Submit a text-to-video task. Returns a taskId immediately." },
+        { "method": "POST", "path": "/generate/image-video", "description": "Submit an image-to-video task. Returns a taskId immediately." },
+        { "method": "GET", "path": "/generate/video-status", "description": "Poll task status. Query params: taskId, outputType (url|binary).", "query": [ { "name": "taskId", "required": true, "description": "The task ID from the create response." }, { "name": "outputType", "required": false, "default": "url", "description": "\"url\" returns JSON with a hosted video URL; \"binary\" returns the raw video file." } ] }
+      ],
+      "requestBody": [
+        { "name": "model", "type": "string", "required": true, "default": null, "description": "Model ID to use for generation, e.g. KLING-3.0-TURBO, SEEDANCE-2.0-MINI, WAN-2.7-VIDEO, HAILUO-2.3, GROK-IMAGINE-VIDEO-1.5, GEMINI-OMNI, HAPPYHORSE-1.1." },
+        { "name": "prompt", "type": "string", "required": true, "default": null, "description": "Text description of the video (or, for image-video, how the image should be animated)." },
+        { "name": "duration", "type": "number", "required": true, "default": null, "description": "Length of the video in seconds. Valid values depend on the selected model (e.g. 4–15s, or fixed 6/10s for some models)." },
+        { "name": "resolution", "type": "string", "required": true, "default": null, "description": "Output resolution. One of \"480p\", \"720p\", or \"1080p\" depending on model support — pricing varies per resolution." },
+        { "name": "aspect_ratio", "type": "string", "required": false, "default": "\"16:9\"", "description": "Output aspect ratio. One of \"16:9\", \"9:16\", or \"1:1\"." },
+        { "name": "image", "type": "string[]", "required": false, "default": null, "description": "Array containing the source image URL. Required only for image-to-video generation (/generate/image-video)." }
+      ],
+      "responses": [
+        { "stage": "create", "format": "json", "example": "{\n  \"success\": true,\n  \"taskId\": \"imagegpt-vid-...\",\n  \"status\": \"waiting\",\n  \"creditsDeducted\": 125\n}" },
+        { "stage": "status", "outputType": "url", "format": "json", "description": "Returns JSON. status is \"waiting\" while rendering, then \"success\" with a hosted video url once done.", "example": "{\n  \"success\": true,\n  \"status\": \"success\",\n  \"url\": \"https://...mp4\"\n}" },
+        { "stage": "status", "outputType": "binary", "format": "javascript", "description": "Returns the raw video file directly once it's ready (no JSON wrapper).", "example": "const blob = await response.blob();\nconst url = URL.createObjectURL(blob);" }
+      ],
+      "notes": [
+        "Video rendering can take anywhere from several seconds to a few minutes depending on duration, resolution, and model. Poll on an interval (e.g. every 3-5s) rather than in a tight loop."
+      ],
+      "examples": [
+        {
+          "label": "Text-to-video (create)",
+          "lang": "javascript",
+          "code": "fetch('https://api.imagegpt.online/generate/text-video', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n    'x-api-key': 'YOUR_API_KEY'\n  },\n  body: JSON.stringify({\n    model: 'KLING-3.0-TURBO',\n    prompt: 'A serene sunset over the ocean with gentle waves',\n    duration: 6,\n    resolution: '720p',\n    aspect_ratio: '16:9'\n  })\n})\n  .then(res => res.json())\n  .then(data => console.log('Task ID:', data.taskId));"
+        },
+        {
+          "label": "Image-to-video (body)",
+          "lang": "javascript",
+          "code": "body: JSON.stringify({\n  model: 'WAN-2.7-VIDEO',\n  prompt: 'Animate the scene with gentle camera movement',\n  image: ['https://example.com/input.jpg'],\n  duration: 5,\n  resolution: '1080p',\n  aspect_ratio: '9:16'\n})"
+        },
+        {
+          "label": "Poll status",
+          "lang": "javascript",
+          "code": "fetch('https://api.imagegpt.online/generate/video-status?taskId=imagegpt-vid-...&outputType=url', {\n  headers: { 'x-api-key': 'YOUR_API_KEY' }\n})\n  .then(res => res.json())\n  .then(data => console.log('Status:', data.status, data.url));"
+        }
+      ],
+      "pricing": {
+        "unit": "credits per second of footage",
+        "notes": "The per-second rate depends on both the model and the chosen resolution. Total cost = credits/second × duration."
+      },
+      "models": [
+        { "id": "KLING-3.0-TURBO", "name": "Kling 3.0 Turbo", "durations": [4,5,6,7,8,9,10,11,12,13,14,15], "resolutions": ["720p","1080p"], "creditsPerSecond": { "720p": 100, "1080p": 125 } },
+        { "id": "SEEDANCE-2.0-MINI", "name": "Seedance 2.0 Mini", "durations": [4,5,6,7,8,9,10,11,12,13,14,15], "resolutions": ["480p","720p"], "creditsPerSecond": { "480p": 50, "720p": 120 } },
+        { "id": "WAN-2.7-VIDEO", "name": "Wan 2.7", "durations": [4,5,6,7,8,9,10,11,12,13,14,15], "resolutions": ["720p","1080p"], "creditsPerSecond": { "720p": 100, "1080p": 125 } },
+        { "id": "HAILUO-2.3", "name": "Hailuo 2.3", "durations": [6,10], "resolutions": ["720p","1080p"], "creditsPerSecond": { "720p": 30, "1080p": 40 } },
+        { "id": "GROK-IMAGINE-VIDEO-1.5", "name": "Grok Imagine", "durations": [4,5,6,7,8,9,10,11,12,13,14,15], "resolutions": ["480p","720p"], "creditsPerSecond": { "480p": 15, "720p": 25 } },
+        { "id": "GEMINI-OMNI", "name": "Gemini Omni", "durations": [6,10], "resolutions": ["720p","1080p"], "creditsPerSecond": { "720p": 200, "1080p": 250 } },
+        { "id": "HAPPYHORSE-1.1", "name": "Happy Horse", "durations": [4,5,6,7,8,9,10,11,12,13,14,15], "resolutions": ["720p","1080p"], "creditsPerSecond": { "720p": 125, "1080p": 160 } },
+        { "id": "SEEDANCE-2-5", "name": "Seedance 2.5", "durations": [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30], "resolutions": ["480p","720p"], "creditsPerSecond": { "480p": 150, "720p": 350 } }
+      ]
+    },
+
+    "audio-generation": {
+      "id": "audio-generation",
+      "sidebar_label": "Audio",
+      "title": "Audio (Text to Speech) API",
+      "overview": "Convert text to natural-sounding audio using models from Qwen3, ElevenLabs, and OpenAI — all through a single endpoint with a credit-based pricing system.",
+      "endpoints": [
+        { "method": "POST", "path": "/generate/text-speech", "description": "Convert text to speech audio." }
+      ],
+      "requestBody": [
+        { "name": "prompt", "type": "string", "required": true, "default": null, "description": "The text you want to convert to speech." },
+        { "name": "model", "type": "string", "required": true, "default": null, "description": "Model ID to use. E.g. QWEN3/TTS-FLASH, ELEVENLABS/TTS, OPENAI/GPT-AUDIO-MINI." },
+        { "name": "outputType", "type": "string", "required": false, "default": "\"binary\"", "description": "Use \"binary\" to receive raw audio bytes, or \"url\" to get a hosted audio URL in JSON." },
+        { "name": "voice", "type": "string", "required": false, "default": "\"alloy\"", "description": "Voice name (applies to OpenAI and ElevenLabs models only). E.g. alloy, nova, rachel, josh." },
+        { "name": "outputFormat", "type": "string", "required": false, "default": "\"mp3\"", "description": "Audio format for the output (applies to OpenAI and ElevenLabs models only). Currently mp3." }
+      ],
+      "responses": [
+        { "outputType": "binary", "format": "binary", "example": "Raw audio bytes (mp3 stream). Save directly to a file or create a Blob URL." },
+        { "outputType": "url", "format": "json", "example": "{\n  \"success\": true,\n  \"url\": \"https://ai.imagegpt.online/imagegpt-pro-audio/1780682139387-amsq4xznzvi.wav\",\n  \"taskId\": \"imagegpt_qwen3/tts-flash-cu0zjaz1xlc1780682133698\",\n  \"duration\": 1,\n  \"creditsDeducted\": 10\n}" }
+      ],
+      "examples": [
+        {
+          "label": "Text-to-speech (fetch)",
+          "lang": "javascript",
+          "code": "fetch('https://api.imagegpt.online/generate/text-speech', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n    'x-api-key': 'YOUR_API_KEY'\n  },\n  body: JSON.stringify({\n    prompt: 'Hello, welcome to ImageGPT!',\n    model: 'QWEN3/TTS-FLASH',\n    outputType: 'binary'\n  })\n})\n  .then(res => res.blob())\n  .then(blob => {\n    const audio = new Audio(URL.createObjectURL(blob));\n    audio.play();\n  });"
+        }
+      ],
+      "pricing": {
+        "unit": "credits per request",
+        "tiers": [
+          { "label": "Economy", "range": "3–10 credits", "description": "Fast, lightweight TTS models.", "examples": "Qwen3 TTS Flash" },
+          { "label": "Standard", "range": "25–50 credits", "description": "High-quality voices for production.", "examples": "ElevenLabs TTS, GPT Audio Mini" },
+          { "label": "Premium", "range": "50–150 credits", "description": "Ultra-realistic studio-quality audio.", "examples": "ElevenLabs V3, GPT Audio 1.5" }
+        ]
+      },
+      "models": [
+        { "id": "QWEN3/TTS-FLASH", "name": "Qwen3 TTS Flash", "credits": 10 },
+        { "id": "ELEVENLABS/TTS", "name": "ElevenLabs TTS", "credits": 50 },
+        { "id": "OPENAI/GPT-AUDIO-MINI", "name": "GPT Audio Mini", "credits": 25 },
+        { "id": "OPENAI/GPT-AUDIO-1.5", "name": "GPT Audio 1.5", "credits": 50 }
+      ]
+    }
+  }
+}

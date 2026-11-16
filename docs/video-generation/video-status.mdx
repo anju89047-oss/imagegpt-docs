@@ -1,0 +1,112 @@
+---
+id: video-status
+title: Check Video Status
+sidebar_label: Check Video Status
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ApiPlayground from '@site/src/components/ApiPlayground';
+
+# Check Video Status
+
+Video generation is asynchronous. A submit call to
+[`/generate/text-video`](./index.mdx) or [`/generate/image-video`](./index.mdx)
+returns a `taskId` immediately. Poll this endpoint until `status` is
+`success`, then read the video `url`.
+
+`GET /generate/video-status`
+
+Poll task status. Query params: taskId, outputType (url|binary).
+
+## Headers
+
+| Header | Required | Value |
+| --- | --- | --- |
+| `x-api-key` | Yes | `YOUR_API_KEY` |
+
+## Query parameters
+
+| Parameter | Required | Default | Description |
+| --- | --- | --- | --- |
+| `taskId` | Yes | — | The task ID from the create response. |
+| `outputType` | No | `url` | "url" returns JSON with a hosted video URL; "binary" returns the raw video file. |
+
+## Examples
+
+<Tabs groupId="lang">
+<TabItem value="curl" label="cURL">
+
+```bash
+curl "https://api.imagegpt.online/generate/video-status?taskId=TASK_ID&outputType=url" \
+  -H "x-api-key: YOUR_API_KEY"
+```
+
+</TabItem>
+<TabItem value="js" label="JavaScript">
+
+```js
+fetch('https://api.imagegpt.online/generate/video-status?taskId=TASK_ID&outputType=url', {
+  headers: { 'x-api-key': 'YOUR_API_KEY' }
+})
+  .then(r => r.json())
+  .then(data => console.log(data));
+```
+
+</TabItem>
+<TabItem value="python" label="Python">
+
+```python
+import requests
+
+status = requests.get(
+    "https://api.imagegpt.online/generate/video-status",
+    headers={"x-api-key": "YOUR_API_KEY"},
+    params={"taskId": "TASK_ID", "outputType": "url"},
+).json()
+print(status)
+```
+
+</TabItem>
+</Tabs>
+
+## Response example
+
+**outputType: url**
+
+Returns JSON. status is "waiting" while rendering, then "success" with a hosted video url once done.
+
+```json
+{
+  "success": true,
+  "status": "success",
+  "url": "https://...mp4"
+}
+```
+
+**outputType: binary**
+
+Returns the raw video file directly once it's ready (no JSON wrapper).
+
+```js
+const blob = await response.blob();
+const url = URL.createObjectURL(blob);
+```
+
+## Playground
+
+Paste a `taskId` from a video submit call and fetch its current status. Your key
+is used only in your browser and is never stored.
+
+<ApiPlayground
+  endpoint="/generate/video-status"
+  method="GET"
+  media="video"
+  queryParams={[
+    {name: 'taskId', label: 'taskId'},
+    {name: 'outputType', label: 'outputType', default: 'url', options: ['url', 'binary']},
+  ]}
+/>
+
+:::note
+Video rendering can take anywhere from several seconds to a few minutes depending on duration, resolution, and model. Poll on an interval (e.g. every 3-5s) rather than in a tight loop.
+:::

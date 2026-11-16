@@ -1,0 +1,167 @@
+---
+id: gpt-image-1
+title: GPT Image 1.0
+sidebar_label: GPT Image 1.0
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ApiPlayground from '@site/src/components/ApiPlayground';
+
+# GPT Image 1.0
+
+A text-to-image model (`GPT-IMAGE-1`) available through the ImageGPT [Image Generation API](./index.mdx). The example below uses text-to-image (`/generate/text-image`).
+
+| Property | Value |
+| --- | --- |
+| Model ID | `GPT-IMAGE-1` |
+| Playground | [Image](./index.mdx) |
+| Pricing | 10 credits per image |
+
+## Headers
+
+Send your API key in the `x-api-key` header on every request. See
+[Authentication](../authentication.mdx) for details.
+
+| Header | Required | Value |
+| --- | --- | --- |
+| `x-api-key` | Yes | `YOUR_API_KEY` |
+| `Content-Type` | Yes | `application/json` |
+
+A missing or invalid key returns **401 Unauthorized**.
+
+## Parameters
+
+Request body fields for `/generate/text-image`:
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `model` | `string` | Yes | — | Model ID to use for generation. See the model list below for all available IDs. |
+| `prompt` | `string` | Yes | — | Text description of the image you want to generate. |
+| `width` | `number` | No | `512` | Output image width in pixels. |
+| `height` | `number` | No | `512` | Output image height in pixels. |
+| `outputType` | `string` | No | `"binary"` | Output delivery format. One of "binary" (image blob), "url" (hosted link), or "base64" (encoded string). |
+| `outputFormat` | `string` | No | `"png"` | Image file format. Either "png" or "jpg". |
+| `image` | `string[]` | No | — | Array of input image URLs (max 3). Required only for image-to-image generation. |
+
+## Request examples
+
+<Tabs groupId="lang">
+<TabItem value="curl" label="cURL">
+
+```bash
+curl -X POST https://api.imagegpt.online/generate/text-image \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{"prompt":"Photorealistic portrait of the same person (keep his real face unchanged). A man with medium curly brown hair, light skin, and soft features sits relaxed, forearms on a light blue table, holding a small white puppy with a red collar. He wears a cozy color-block knitted sweater (beige, tan, light blue, black) with ribbed neck and cuffs, a silver watch, and a turquoise-beaded bracelet. Soft diffused lighting, smooth steel-blue background, slightly elevated front angle warm, intimate, digital photo","width":512,"height":512,"model":"GPT-IMAGE-1","outputType":"binary","outputFormat":"png"}'
+```
+
+</TabItem>
+<TabItem value="js" label="JavaScript">
+
+```js
+fetch('https://api.imagegpt.online/generate/text-image', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+  "prompt": "Photorealistic portrait of the same person (keep his real face unchanged). A man with medium curly brown hair, light skin, and soft features sits relaxed, forearms on a light blue table, holding a small white puppy with a red collar. He wears a cozy color-block knitted sweater (beige, tan, light blue, black) with ribbed neck and cuffs, a silver watch, and a turquoise-beaded bracelet. Soft diffused lighting, smooth steel-blue background, slightly elevated front angle warm, intimate, digital photo",
+  "width": 512,
+  "height": 512,
+  "model": "GPT-IMAGE-1",
+  "outputType": "binary",
+  "outputFormat": "png"
+})
+})
+  .then(res => res.blob())
+  .then(blob => {
+    const img = new Image();
+    img.src = URL.createObjectURL(blob);
+    document.body.appendChild(img);
+  });
+```
+
+</TabItem>
+<TabItem value="python" label="Python">
+
+```python
+import requests
+
+resp = requests.post(
+    "https://api.imagegpt.online/generate/text-image",
+    headers={"x-api-key": "YOUR_API_KEY"},
+    json={
+        "prompt": "Photorealistic portrait of the same person (keep his real face unchanged). A man with medium curly brown hair, light skin, and soft features sits relaxed, forearms on a light blue table, holding a small white puppy with a red collar. He wears a cozy color-block knitted sweater (beige, tan, light blue, black) with ribbed neck and cuffs, a silver watch, and a turquoise-beaded bracelet. Soft diffused lighting, smooth steel-blue background, slightly elevated front angle warm, intimate, digital photo",
+        "width": 512,
+        "height": 512,
+        "model": "GPT-IMAGE-1",
+        "outputType": "binary",
+        "outputFormat": "png"
+    },
+)
+with open("image.png", "wb") as f:
+    f.write(resp.content)
+```
+
+</TabItem>
+</Tabs>
+
+## Response example
+
+**binary**
+
+```js
+const blob = await response.blob();
+const url = URL.createObjectURL(blob);
+```
+
+**url**
+
+```json
+{
+  "success": true,
+  "taskId": "imagegpt_img-...",
+  "url": "https://...",
+  "creditsDeducted": 3
+}
+```
+
+**base64**
+
+```json
+{
+  "success": true,
+  "taskId": "imagegpt_img-...",
+  "base64": "/9j/4QWm...",
+  "creditsDeducted": 3
+}
+```
+
+## Pricing
+
+**10** credits per image. Each image deducts the credit value shown for the selected model.
+
+## Playground
+
+Try this model live. Your key is used only in your browser to call the API
+directly and is never stored.
+
+<ApiPlayground
+  endpoint="/generate/text-image"
+  media="image"
+  defaultBody={`{
+  "prompt": "Photorealistic portrait of the same person (keep his real face unchanged). A man with medium curly brown hair, light skin, and soft features sits relaxed, forearms on a light blue table, holding a small white puppy with a red collar. He wears a cozy color-block knitted sweater (beige, tan, light blue, black) with ribbed neck and cuffs, a silver watch, and a turquoise-beaded bracelet. Soft diffused lighting, smooth steel-blue background, slightly elevated front angle warm, intimate, digital photo",
+  "width": 512,
+  "height": 512,
+  "model": "GPT-IMAGE-1",
+  "outputType": "binary",
+  "outputFormat": "png"
+}`}
+/>
+
+:::note
+The browser playground calls `https://api.imagegpt.online` directly, so it only works if the API
+allows cross-origin requests from this site. If it is blocked, use the cURL,
+JavaScript, or Python samples above from your own server.
+:::

@@ -1,0 +1,55 @@
+---
+id: authentication
+title: Authentication
+sidebar_label: Authentication
+sidebar_position: 2
+---
+
+# Authentication
+
+Every request to the ImageGPT API must include your API key in the
+`x-api-key` header.
+
+| Property | Value |
+| --- | --- |
+| Type | API key |
+| Location | HTTP header |
+| Header name | `x-api-key` |
+| On missing / invalid key | `401 Unauthorized` |
+
+A missing or invalid key returns **`401 Unauthorized`**.
+
+## Example header
+
+```http
+x-api-key: YOUR_API_KEY
+```
+
+## Sending the key
+
+```js title="fetch"
+fetch('https://api.imagegpt.online/generate/text', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    // highlight-next-line
+    'x-api-key': 'YOUR_API_KEY',
+  },
+  body: JSON.stringify({
+    model: 'GEMINI-2.5-FLASH-LITE',
+    prompt: 'Hello!',
+  }),
+});
+```
+
+```bash title="curl"
+curl https://api.imagegpt.online/generate/text \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{"model":"GEMINI-2.5-FLASH-LITE","prompt":"Hello!"}'
+```
+
+:::warning Keep your key secret
+Never expose your API key in client-side code that ships to end users. Call the
+API from a server or a trusted backend environment.
+:::

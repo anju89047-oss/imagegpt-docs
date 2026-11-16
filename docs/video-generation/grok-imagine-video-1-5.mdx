@@ -1,0 +1,186 @@
+---
+id: grok-imagine-video-1-5
+title: Grok Imagine
+sidebar_label: Grok Imagine
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ApiPlayground from '@site/src/components/ApiPlayground';
+
+# Grok Imagine
+
+A video model (`GROK-IMAGINE-VIDEO-1.5`) available through the ImageGPT [Video Generation API](./index.mdx). The example below uses image-to-video (`/generate/image-video`) and returns a `taskId`.
+
+| Property | Value |
+| --- | --- |
+| Model ID | `GROK-IMAGINE-VIDEO-1.5` |
+| Playground | [Video](./index.mdx) |
+| Durations (s) | 4–15 |
+| Resolutions | 480p, 720p |
+| Pricing | 480p: 15 · 720p: 25 (credits/s) |
+
+## Headers
+
+Send your API key in the `x-api-key` header on every request. See
+[Authentication](../authentication.mdx) for details.
+
+| Header | Required | Value |
+| --- | --- | --- |
+| `x-api-key` | Yes | `YOUR_API_KEY` |
+| `Content-Type` | Yes | `application/json` |
+
+A missing or invalid key returns **401 Unauthorized**.
+
+## Parameters
+
+Request body fields for `/generate/image-video`:
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `model` | `string` | Yes | — | Model ID to use for generation, e.g. KLING-3.0-TURBO, SEEDANCE-2.0-MINI, WAN-2.7-VIDEO, HAILUO-2.3, GROK-IMAGINE-VIDEO-1.5, GEMINI-OMNI, HAPPYHORSE-1.1. |
+| `prompt` | `string` | Yes | — | Text description of the video (or, for image-video, how the image should be animated). |
+| `duration` | `number` | Yes | — | Length of the video in seconds. Valid values depend on the selected model (e.g. 4–15s, or fixed 6/10s for some models). |
+| `resolution` | `string` | Yes | — | Output resolution. One of "480p", "720p", or "1080p" depending on model support — pricing varies per resolution. |
+| `aspect_ratio` | `string` | No | `"16:9"` | Output aspect ratio. One of "16:9", "9:16", or "1:1". |
+| `image` | `string[]` | No | — | Array containing the source image URL. Required only for image-to-video generation (/generate/image-video). |
+
+:::tip Asynchronous model
+Submitting a task returns a `taskId`. Poll the result with the
+[Check Video Status](./video-status.mdx) API.
+:::
+
+## Request examples
+
+<Tabs groupId="lang">
+<TabItem value="curl" label="cURL">
+
+```bash
+curl -X POST https://api.imagegpt.online/generate/image-video \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{"prompt":"A serene sunset over the ocean with gentle waves","model":"GROK-IMAGINE-VIDEO-1.5","aspect_ratio":"16:9","duration":4,"resolution":"720p","image":["https://provey-media.sgp1.cdn.digitaloceanspaces.com/generated/ac20c35c-07fa-464e-aa24-b172fba616a4-1782224538204.jpg"]}'
+```
+
+</TabItem>
+<TabItem value="js" label="JavaScript">
+
+```js
+fetch('https://api.imagegpt.online/generate/image-video', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+  "prompt": "A serene sunset over the ocean with gentle waves",
+  "model": "GROK-IMAGINE-VIDEO-1.5",
+  "aspect_ratio": "16:9",
+  "duration": 4,
+  "resolution": "720p",
+  "image": [
+    "https://provey-media.sgp1.cdn.digitaloceanspaces.com/generated/ac20c35c-07fa-464e-aa24-b172fba616a4-1782224538204.jpg"
+  ]
+})
+})
+  .then(res => res.json())
+  // Returns a taskId. Retrieve the finished video with the Check Video Status API.
+  .then(data => console.log(data));
+```
+
+</TabItem>
+<TabItem value="python" label="Python">
+
+```python
+import requests
+
+resp = requests.post(
+    "https://api.imagegpt.online/generate/image-video",
+    headers={"x-api-key": "YOUR_API_KEY"},
+    json={
+        "prompt": "A serene sunset over the ocean with gentle waves",
+        "model": "GROK-IMAGINE-VIDEO-1.5",
+        "aspect_ratio": "16:9",
+        "duration": 4,
+        "resolution": "720p",
+        "image": [
+            "https://provey-media.sgp1.cdn.digitaloceanspaces.com/generated/ac20c35c-07fa-464e-aa24-b172fba616a4-1782224538204.jpg"
+        ]
+    },
+)
+# Returns a taskId. Retrieve the finished video with the Check Video Status API.
+print(resp.json())
+```
+
+</TabItem>
+</Tabs>
+
+## Response example
+
+**create**
+
+```json
+{
+  "success": true,
+  "taskId": "imagegpt-vid-...",
+  "status": "waiting",
+  "creditsDeducted": 125
+}
+```
+
+**status · url**
+
+Returns JSON. status is "waiting" while rendering, then "success" with a hosted video url once done.
+
+```json
+{
+  "success": true,
+  "status": "success",
+  "url": "https://...mp4"
+}
+```
+
+**status · binary**
+
+Returns the raw video file directly once it's ready (no JSON wrapper).
+
+```js
+const blob = await response.blob();
+const url = URL.createObjectURL(blob);
+```
+
+## Pricing
+
+Charged in **credits per second of footage**. The per-second rate depends on both the model and the chosen resolution. Total cost = credits/second × duration.
+
+| Resolution | Credits / second |
+| --- | --- |
+| 480p | 15 |
+| 720p | 25 |
+
+For example, a 4s clip at 720p costs 100 credits.
+
+## Playground
+
+Try this model live. Your key is used only in your browser to call the API
+directly and is never stored. This example sends an input image URL; swap it for your own.
+
+<ApiPlayground
+  endpoint="/generate/image-video"
+  media="text"
+  defaultBody={`{
+  "prompt": "A serene sunset over the ocean with gentle waves",
+  "model": "GROK-IMAGINE-VIDEO-1.5",
+  "aspect_ratio": "16:9",
+  "duration": 4,
+  "resolution": "720p",
+  "image": [
+    "https://provey-media.sgp1.cdn.digitaloceanspaces.com/generated/ac20c35c-07fa-464e-aa24-b172fba616a4-1782224538204.jpg"
+  ]
+}`}
+/>
+
+:::note
+The browser playground calls `https://api.imagegpt.online` directly, so it only works if the API
+allows cross-origin requests from this site. If it is blocked, use the cURL,
+JavaScript, or Python samples above from your own server.
+:::

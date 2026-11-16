@@ -1,0 +1,122 @@
+---
+id: index
+title: Image Generation API
+sidebar_label: Overview
+slug: /image-generation
+---
+# Image Generation API
+
+A unified REST API to generate images using 15+ AI models — supporting text-to-image and image-to-image generation with multiple output formats, all through a single endpoint with a credit-based pricing system.
+
+## Endpoints
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `POST` | `/generate/text-image` | Generate an image from a text prompt. |
+| `POST` | `/generate/image-image` | Generate an image from one or more input images (image-to-image). |
+
+## Parameters
+
+Request body fields for `/generate/text-image`:
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `model` | `string` | Yes | — | Model ID to use for generation. See the model list below for all available IDs. |
+| `prompt` | `string` | Yes | — | Text description of the image you want to generate. |
+| `width` | `number` | No | `512` | Output image width in pixels. |
+| `height` | `number` | No | `512` | Output image height in pixels. |
+| `outputType` | `string` | No | `"binary"` | Output delivery format. One of "binary" (image blob), "url" (hosted link), or "base64" (encoded string). |
+| `outputFormat` | `string` | No | `"png"` | Image file format. Either "png" or "jpg". |
+| `image` | `string[]` | No | — | Array of input image URLs (max 3). Required only for image-to-image generation. |
+
+## Response example
+
+**binary**
+
+```js
+const blob = await response.blob();
+const url = URL.createObjectURL(blob);
+```
+
+**url**
+
+```json
+{
+  "success": true,
+  "taskId": "imagegpt_img-...",
+  "url": "https://...",
+  "creditsDeducted": 3
+}
+```
+
+**base64**
+
+```json
+{
+  "success": true,
+  "taskId": "imagegpt_img-...",
+  "base64": "/9j/4QWm...",
+  "creditsDeducted": 3
+}
+```
+
+## Examples
+
+```js title="Text-to-image (fetch)"
+fetch('https://api.imagegpt.online/generate/text-image', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    model: 'FLUX-SCHNELL',
+    prompt: 'A futuristic city at sunset, photorealistic',
+    width: 512,
+    height: 512,
+    outputType: 'url',
+    outputFormat: 'png'
+  })
+})
+  .then(res => res.json())
+  .then(data => console.log('Image URL:', data.url));
+```
+
+```js title="Image-to-image (body)"
+body: JSON.stringify({
+  model: 'FLUX-KONTEXT',
+  prompt: 'Turn this photo into an oil painting',
+  image: ['https://example.com/input.jpg'],
+  outputType: 'url'
+})
+```
+
+## Pricing
+
+Charged in **credits per image**. Each image deducts the credit value shown for the selected model.
+
+## Models
+
+Each model has its own page with parameters, examples, and a live playground.
+
+| Model | Model ID | Credits / image |
+| --- | --- | --- |
+| [Flux Schnell](./flux-schnell.mdx) | `FLUX-SCHNELL` | 3 |
+| [Z Image Turbo](./zimage-turbo.mdx) | `ZIMAGE-TURBO` | 5 |
+| [GPT Image 1.0](./gpt-image-1.mdx) | `GPT-IMAGE-1` | 10 |
+| [GPT Image 1.5](./gpt-image-1-5.mdx) | `GPT-IMAGE-1.5` | 25 |
+| [GPT Image 2.0](./gpt-image-2.mdx) | `GPT-IMAGE-2` | 35 |
+| [GPT Image 2.5 Flare](./gpt-image-2-5-flare.mdx) | `GPT-IMAGE-2.5-FLARE` | 35 |
+| [Nano Banana](./nanobanana.mdx) | `NANOBANANA` | 10 |
+| [Nano Banana 2 Lite](./nanobanana-2-lite.mdx) | `NANOBANANA-2-LITE` | 10 |
+| [Nano Banana 2](./nanobanana-2.mdx) | `NANOBANANA-2` | 40 |
+| [Nano Banana 2.1](./nanobanana-2-1.mdx) | `NANOBANANA-2.1` | 20 |
+| [Nano Banana Pro](./nanobanana-pro.mdx) | `NANOBANANA-PRO` | 100 |
+| [Seedream](./seedream.mdx) | `SEEDREAM` | 25 |
+| [Seedream 4.0](./seedream-4-0.mdx) | `SEEDREAM 4.0` | 35 |
+| [Seedream Lite 5.0](./seedream-lite-5-0.mdx) | `SEEDREAM LITE 5.0` | 35 |
+| [Ideogram](./ideogram.mdx) | `IDEOGRAM` | 35 |
+| [Qwen Image](./qwen-image.mdx) | `QWEN-IMAGE` | 30 |
+| [Flux Kontext](./flux-kontext.mdx) | `FLUX-KONTEXT` | 25 |
+| [Wan Image 2.7](./wan-image-2-7.mdx) | `WAN-IMAGE-2.7` | 40 |
+| [Grok Imagine](./grok-image.mdx) | `GROK-IMAGE` | 20 |

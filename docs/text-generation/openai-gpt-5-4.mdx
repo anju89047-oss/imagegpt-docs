@@ -1,0 +1,145 @@
+---
+id: openai-gpt-5-4
+title: OPENAI GPT 5.4
+sidebar_label: OPENAI GPT 5.4
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ApiPlayground from '@site/src/components/ApiPlayground';
+
+# OPENAI GPT 5.4
+
+A text model (`OPENAI-GPT-5.4`) available through the ImageGPT [Text Generation API](./index.mdx).
+
+| Property | Value |
+| --- | --- |
+| Model ID | `OPENAI-GPT-5.4` |
+| Playground | [Text](./index.mdx) |
+| Pricing | 30 credits per 1,000 output tokens |
+
+## Headers
+
+Send your API key in the `x-api-key` header on every request. See
+[Authentication](../authentication.mdx) for details.
+
+| Header | Required | Value |
+| --- | --- | --- |
+| `x-api-key` | Yes | `YOUR_API_KEY` |
+| `Content-Type` | Yes | `application/json` |
+
+A missing or invalid key returns **401 Unauthorized**.
+
+## Parameters
+
+Request body fields for `/generate/text`:
+
+| Parameter | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `model` | `string` | Yes | — | Model ID to use for generation. See the model list below for all available IDs. |
+| `prompt` | `string` | Yes | — | The user prompt / instruction to send to the model. |
+| `system` | `string` | No | `""` | Optional system message to set the model's behavior or persona. |
+| `outputType` | `string` | No | `"text"` | Output format. Use "text" for plain text or "json" to receive a structured JSON response. |
+| `maxTokens` | `number` | No | `model max` | Maximum number of output tokens to generate. Minimum value is 100. |
+
+## Request examples
+
+<Tabs groupId="lang">
+<TabItem value="curl" label="cURL">
+
+```bash
+curl -X POST https://api.imagegpt.online/generate/text \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -d '{"model":"OPENAI-GPT-5.4","prompt":"Build a simple Tic Tac Toe game using only HTML, CSS, and JavaScript with two-player turn-by-turn gameplay and a restart button after the game ends.","system":"You are a friendly assistant.","outputType":"text"}'
+```
+
+</TabItem>
+<TabItem value="js" label="JavaScript">
+
+```js
+fetch('https://api.imagegpt.online/generate/text', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+  "model": "OPENAI-GPT-5.4",
+  "prompt": "Build a simple Tic Tac Toe game using only HTML, CSS, and JavaScript with two-player turn-by-turn gameplay and a restart button after the game ends.",
+  "system": "You are a friendly assistant.",
+  "outputType": "text"
+})
+})
+  .then(res => res.text())
+  .then(console.log);
+```
+
+</TabItem>
+<TabItem value="python" label="Python">
+
+```python
+import requests
+
+resp = requests.post(
+    "https://api.imagegpt.online/generate/text",
+    headers={"x-api-key": "YOUR_API_KEY"},
+    json={
+        "model": "OPENAI-GPT-5.4",
+        "prompt": "Build a simple Tic Tac Toe game using only HTML, CSS, and JavaScript with two-player turn-by-turn gameplay and a restart button after the game ends.",
+        "system": "You are a friendly assistant.",
+        "outputType": "text"
+    },
+)
+print(resp.text)
+```
+
+</TabItem>
+</Tabs>
+
+## Response example
+
+**text**
+
+```text
+A plain text string from the model.
+```
+
+**json**
+
+```json
+{
+  "success": true,
+  "output": "...",
+  "usage": {
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "creditsDeducted": 0
+  }
+}
+```
+
+## Pricing
+
+**30** credits per 1,000 output tokens. Input tokens are always free. The credit value shown per model is charged per 1,000 output tokens.
+
+## Playground
+
+Try this model live. Your key is used only in your browser to call the API
+directly and is never stored.
+
+<ApiPlayground
+  endpoint="/generate/text"
+  media="text"
+  defaultBody={`{
+  "model": "OPENAI-GPT-5.4",
+  "prompt": "Build a simple Tic Tac Toe game using only HTML, CSS, and JavaScript with two-player turn-by-turn gameplay and a restart button after the game ends.",
+  "system": "You are a friendly assistant.",
+  "outputType": "text"
+}`}
+/>
+
+:::note
+The browser playground calls `https://api.imagegpt.online` directly, so it only works if the API
+allows cross-origin requests from this site. If it is blocked, use the cURL,
+JavaScript, or Python samples above from your own server.
+:::

@@ -1,0 +1,49 @@
+---
+id: intro
+title: ImageGPT API
+sidebar_label: Introduction
+sidebar_position: 1
+slug: /
+---
+
+# ImageGPT API
+
+Unified REST API for generating **text, images, video, and audio** from 40+ AI
+models through a single endpoint with credit-based pricing.
+
+## Base URL
+
+All requests are made to:
+
+```
+https://api.imagegpt.online
+```
+
+## What you can build
+
+| Playground | Endpoint prefix | What it does |
+| --- | --- | --- |
+| [Text](./text-generation/index.mdx) | `/generate/text` | Chat completions from 20+ LLMs (OpenAI, Google, Anthropic, DeepSeek, and more). |
+| [Image](./image-generation/index.mdx) | `/generate/text-image`, `/generate/image-image` | Text-to-image and image-to-image generation with 15+ models. |
+| [Video](./video-generation/index.mdx) | `/generate/text-video`, `/generate/image-video` | Asynchronous text-to-video and image-to-video with 7+ models. |
+| [Audio](./audio-generation/index.mdx) | `/generate/text-speech` | Text-to-speech from Qwen3, ElevenLabs, and OpenAI. |
+
+## How it works
+
+1. **Get an API key** and send it in the `x-api-key` header on every request.
+   See [Authentication](./authentication).
+2. **Pick a model** from the model list on each playground page.
+3. **Call the endpoint** with a JSON body describing what you want.
+4. **Pay in credits** — each model deducts a credit amount per request, per
+   token, per image, or per second depending on the playground.
+
+## Credit-based pricing
+
+Every playground deducts credits based on its own unit:
+
+- **Text** — credits per 1,000 output tokens (input tokens are free).
+- **Image** — credits per generated image.
+- **Video** — credits per second of footage (varies by model and resolution).
+- **Audio** — credits per request.
+
+Each playground page lists the exact credit cost for every available model.
